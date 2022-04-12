@@ -4,16 +4,17 @@ fetch("http://localhost:3000/api/products")
   .then((data) => product (data))
 
 // fonction pour afficher les produits de l'api
-function product(index) {
-    let Article = document.getElementById("items");
+function product(items) {
+    // création de la CONSANTE
+    const ARTICLE = document.getElementById("items");
     // création de la boucle
-    for (let article of index) {
-      Article.innerHTML += 
-      `<a href="./product.html?_id=${article._id}">
+    for (let kanap of items) {
+      ARTICLE.innerHTML += 
+      `<a href="./product.html?_id=${kanap._id}">
         <article>
-            <img src="${article.imageUrl}" alt="${article.altTxt}">
-            <h3 class="productName">${article.name}</h3>
-            <p class="productDescription">${article.description}</p>
+            <img src="${kanap.imageUrl}" alt="${kanap.altTxt}">
+            <h3 class="productName">${kanap.name}</h3>
+            <p class="productDescription">${kanap.description}</p>
         </article>
     </a>`;
     }
