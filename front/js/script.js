@@ -5,7 +5,7 @@ fetch("http://localhost:3000/api/products")
 
 // fonction pour afficher les produits de l'api
 function product(article) {
-    // création de la CONSANTE
+    // création de la constante
     const items = document.getElementById("items");
     // création de la boucle
     for (let kanap of article) {

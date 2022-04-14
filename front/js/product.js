@@ -1,4 +1,4 @@
-// récupérer l'id du produit a partir de l'URL
+// je récupère l'id du produit a partir de l'URL
 const PRODUCTURL = new URLSearchParams(document.location.search);
 const ID = PRODUCTURL.get("_id");
 console.log(ID);
@@ -6,7 +6,7 @@ console.log(ID);
 fetch(`http://localhost:3000/api/products/${ID}`)
   .then((res) => res.json())
   .then((kanap) => {
-    //je créer les contantes pour chaque élément du produit
+    //je crée les contantes pour chaque élément du produit
     const pageTitle = document.querySelector("title");
     const Img = document.querySelector(".item__img");
     const productTitle = document.querySelector("#title");
@@ -25,3 +25,19 @@ fetch(`http://localhost:3000/api/products/${ID}`)
         `<option value="${colors}">${colors}</option>` ;
       }
   })
+// je récupère les donnés de couleur et de quantité
+//couleur
+colorSelect.addEventListener ("input", (event) => {
+  const colorProduct = event.target.value;
+});
+//quantité
+const quantitySelect = document.querySelector("#quantity");
+quantitySelect.addEventListener ("input",(event) => {
+  const quantityProduct = event.target.value;
+});
+
+//je crée les conditions pour ajouter au panier
+const ajouterAuPanier = document.querySelector ("#addToCart");
+ajouterAuPanier.addEventListener("click",() => {
+  if ()
+};
