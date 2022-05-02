@@ -59,15 +59,16 @@ function addLocalStorage (){
   if (storage == null) {
     storage = [];
   }
-  //  la varable si le produit existe pas
+  //  la varable pour savoir si le produit existe ou pas
   let exist = false;
   // si le produit existe
   for (let i = 0; i < storage.length; i++){
-    if (storage[i].id === productId && storage[i].color === colorSelect) {
+    if (storage[i].id === productId && storage[i].color === colorChoice) {
       storage[i].quantity += quantitySelect
       exist = true
     }
   }
+  // si le produit existe pas
   if (!exist) {
     storage.push(cart);
   }
