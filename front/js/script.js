@@ -1,4 +1,4 @@
-// Récupéré les produits depuis l'api
+// je récupérè les produits depuis l'api
 fetch("http://localhost:3000/api/products")
   .then((res) => res.json())
   .then((data) => product (data))
@@ -18,4 +18,4 @@ function product(article) {
         </article>
     </a>`;
     }
-  }
+}
