@@ -16,6 +16,8 @@ fetch(`http://localhost:3000/api/products/${productId}`)
   // Je place les données aux bons endroits sur la page
   pageTitle.textContent = kanap.name;
   productImg.innerHTML = `<img src="${kanap.imageUrl}" alt="${kanap.altTxt}">`;
+  productImageURL = kanap.imageUrl;
+  productImageAlt = kanap.altTxt;
   productTitle.textContent = kanap.name;
   productPrice.textContent = kanap.price;
   productDescription.textContent = kanap.description ;
@@ -48,13 +50,15 @@ function addLocalStorage (){
   //je crée la constate tableau pour le localstorage
   const cart = {
     id : productId,
+    img : productImageURL,
+    alt : productImageAlt,
     name : productTitle.textContent,
-    img : productImg.innerHTML,
+    price : productPrice.textContent,
     color : colorChoice,
     quantity : quantitySelect,
   };
   // je récupère les données dans le localstorage
-  let storage = JSON.parse(localStorage.getItem ("all"));
+  let storage = JSON.parse(localStorage.getItem ("cart"));
   // je verifie que le produit n'est pas dans le localstorage
   if (storage == null) {
     storage = [];
@@ -73,7 +77,7 @@ function addLocalStorage (){
     storage.push(cart);
   }
   //Convertir l'objet JS en chaine de caractere Json afin de le stocker ds le localstorage    
-  localStorage.setItem("all", JSON.stringify(storage)); 
+  localStorage.setItem("cart", JSON.stringify(storage)); 
   // Créer un message d'alerte pr confimer que le produit a été ajouté au panier
   alert("Votre produit a bien été ajouté au panier");   
 };
