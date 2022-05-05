@@ -44,7 +44,7 @@ function addLocalStorage (){
     quantitySelect = parseInt(quantitySelect.value);
   }
   if(quantitySelect <1 ||quantitySelect>100){
-    alert ("Veuillez choisir une quantité");
+    alert ("Veuillez choisir une quantité entre 1 et 100");
     return
   };
   //je crée la constate tableau pour le localstorage
@@ -63,7 +63,7 @@ function addLocalStorage (){
   if (storage == null) {
     storage = [];
   }
-  //  la varable pour savoir si le produit existe ou pas
+  // je crée la varable pour savoir si le produit existe ou pas
   let exist = false;
   // si le produit existe
   for (let i = 0; i < storage.length; i++){
