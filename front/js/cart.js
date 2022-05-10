@@ -33,7 +33,6 @@ const deleteItem = document.querySelectorAll(".deleteItem");
 const quantity = document.querySelectorAll(".itemQuantity");
 // je créer la boucle pour modifier la quantiter
 for (let i = 0; i < products.length; i++) {
-  // j'empèche que la quantité soit superieur à 100
   const qty = quantity[i];
   const cartProducts = cart[i];
   qty.addEventListener("change", (event) => {
@@ -41,7 +40,6 @@ for (let i = 0; i < products.length; i++) {
     cartProducts.quantity = parseInt(event.target.value);
     // // je mes à jour le localstorage
     localStorage.setItem("cart", JSON.stringify(cart));
-    // on lance la fonction qui va mettre à jour le prix et le total de la page panier
     calcultateTotalPrice();
     });
 }
@@ -56,31 +54,28 @@ for (let i = 0; i < products.length; i++) {
       return article.id != dataId || article.color != colorId;
     });
     cart = filtre;
-
-    // on supprime le code HTML de ce même élément
+    // je supprime le code HTML
     document.querySelector(
         `[data-id='${dataId}']` && `[data-color='${colorId}']`
-      )
+        )
       .remove();
-    // On met à jour le localstorage
-    localStorage.setItem("panier", JSON.stringify(panier));
-    // on lance la fonction qui va mettre à jour le prix et le total de la page panier
+    // je mes à jour le localstorage
+    localStorage.setItem("cart", JSON.stringify(cart));
     calcultateTotalPrice();
   });
 }
 // le nombre d'article et le prix total
-function calcultateTotalPrice(products) {
-  //Définir les variables des totaux quantité et prix pour le panier  
-    let totalPrice = 0; 
-    let totalQuantity = 0; 
-  //Faire une boucle pour récupérer toutes les quantités et prix dans le localstorage puis calculer les totaux 
-  for (let i = 0; i < products.length; i++) {
-      let kanapQuantity = products[i].quantity; 
-      let price = products[i].price; 
-      totalQuantity += parseInt(quantity); 
-      totalPrice += kanapQuantity * price; 
-    }
-  //Insérer les totaux dans le DOM
-    document.querySelector("#totalPrice").innerHTML = totalPrice;
-    document.querySelector("#totalQuantity").innerHTML = totalQuantity;
+async function calcultateTotalPrice() {
+  let panier = JSON.parse(localStorage.getItem("cart"));
+  // je déclare les variables en tant que nombre
+  let totalArticle = 0;
+  let totalPrix = 0;
+  // je créer la boucle pour récupéré les quantités et calculer le prix total
+  for (let article of panier) {
+    totalArticle += article.quantity;
+    totalPrix += article.quantity * article.price;
+  }
+  // j'affichage le nombre d'article et le prix total
+  totalArticle = document.getElementById("totalQuantity").textContent;
+  totalPrix = document.getElementById("totalPrice").textContent;
 }
