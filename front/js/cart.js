@@ -27,6 +27,7 @@ for ( kanap of cart) {
         </div>
     </div>
 </article>`
+calcultateTotal()
 }
 const products = document.querySelectorAll(".cart__item");
 const deleteItem = document.querySelectorAll(".deleteItem");
@@ -40,7 +41,7 @@ for (let i = 0; i < products.length; i++) {
     cartProducts.quantity = parseInt(event.target.value);
     // // je mes à jour le localstorage
     localStorage.setItem("cart", JSON.stringify(cart));
-    calcultateTotalPrice();
+    calcultateTotal();
     });
 }
 //suprimer du panier un produit
@@ -61,21 +62,89 @@ for (let i = 0; i < products.length; i++) {
       .remove();
     // je mes à jour le localstorage
     localStorage.setItem("cart", JSON.stringify(cart));
-    calcultateTotalPrice();
+    calcultateTotal();
   });
 }
 // le nombre d'article et le prix total
-async function calcultateTotalPrice() {
+function calcultateTotal() {
   let panier = JSON.parse(localStorage.getItem("cart"));
   // je déclare les variables en tant que nombre
   let totalArticle = 0;
   let totalPrix = 0;
   // je créer la boucle pour récupéré les quantités et calculer le prix total
   for (let article of panier) {
-    totalArticle += article.quantity;
-    totalPrix += article.quantity * article.price;
+    totalArticle += parseInt(article.quantity);
+    totalPrix += parseInt(article.quantity) * parseInt(article.price);
   }
-  // j'affichage le nombre d'article et le prix total
-  totalArticle = document.getElementById("totalQuantity").textContent;
-  totalPrix = document.getElementById("totalPrice").textContent;
+  document.getElementById("totalQuantity").textContent = totalArticle;
+  document.getElementById("totalPrice").textContent = totalPrix;
 }
+// le formulaire
+// je créer la constante pour indiqué le lieu du formulaire
+const form = document.querySelector(".cart__order__form");
+// je créer les constantes des regex
+const nameRegex = new RegExp ("[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]+$");
+const addressRegex = new RegExp ("[a-zA-Z0-9àáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]+$");
+const cityRegex = new RegExp ("[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]+$");
+const emailRegex = new RegExp("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$");
+// Ecoute les modification
+form.firstName.addEventListener('change', function() {
+  validFirstName(this);
+});
+form.lastName.addEventListener('change', function() {
+  validLastName(this);
+});
+form.address.addEventListener('change', function() {
+  validAddress(this);
+});
+form.city.addEventListener('change', function() {
+  validCity(this);
+});
+form.email.addEventListener('change', function() {
+  validEmail(this);
+});
+// partie validation
+const validFirstName = function(inputFirstName) {
+  let firstNameErrorMsg = inputFirstName.nextElementSibling;
+  if (nameRegex.test(inputFirstName.value)) {
+      firstNameErrorMsg.innerHTML = '';
+  } else {
+      firstNameErrorMsg.innerHTML = 'Veuillez renseigner votre prénom.';
+  }
+};
+const validLastName = function(inputLastName) {
+  let lastNameErrorMsg = inputLastName.nextElementSibling;
+
+  if (nameRegex.test(inputLastName.value)) {
+      lastNameErrorMsg.innerHTML = '';
+  } else {
+      lastNameErrorMsg.innerHTML = 'Veuillez renseigner votre nom.';
+  }
+};
+const validAddress = function(inputAddress) {
+  let addressErrorMsg = inputAddress.nextElementSibling;
+
+  if (addressRegex.test(inputAddress.value)) {
+      addressErrorMsg.innerHTML = '';
+  } else {
+      addressErrorMsg.innerHTML = 'Veuillez renseigner votre adresse.';
+  }
+};
+const validCity = function(inputCity) {
+  let cityErrorMsg = inputCity.nextElementSibling;
+
+  if (cityRegex.test(inputCity.value)) {
+      cityErrorMsg.innerHTML = '';
+  } else {
+      cityErrorMsg.innerHTML = 'Veuillez renseigner votre ville.';
+  }
+};
+const validEmail = function(inputEmail) {
+  let emailErrorMsg = inputEmail.nextElementSibling;
+
+  if (emailRegex.test(inputEmail.value)) {
+      emailErrorMsg.innerHTML = '';
+  } else {
+      emailErrorMsg.innerHTML = 'Veuillez renseigner votre email.';
+  }
+};
