@@ -36,30 +36,34 @@ const quantity = document.querySelectorAll(".itemQuantity");
 for (let i = 0; i < products.length; i++) {
   const qty = quantity[i];
   const cartProducts = cart[i];
-  qty.addEventListener("change", (event) => {
-    //j'enregistre la nouvelle quantiter
-    cartProducts.quantity = parseInt(event.target.value);
-    // // je mes à jour le localstorage
-    localStorage.setItem("cart", JSON.stringify(cart));
-    calcultateTotal();
-    });
+  if (qty) {
+    qty.addEventListener("change", (event) => {
+      //j'enregistre la nouvelle quantiter
+      cartProducts.quantity = parseInt(event.target.value);
+      // je mes à jour le localstorage
+      localStorage.setItem("cart", JSON.stringify(cart));
+    })}
+    if (qty.value > 100) {
+      qty.value = 100;
+    }
+      calcultateTotal();
 }
-//suprimer du panier un produit
+// suprimer du panier un produit
 for (let i = 0; i < products.length; i++) {
   const del = deleteItem[i];
   let colorId = cart[i].color;
   let dataId = cart[i].id;
   del.addEventListener("click", () => {
-    // je supprime de notre panier l'élément de la boucle selectionné via splice()
+    // je supprime de notre panier l'élément de la boucle
     let filtre = cart.filter(function (article) {
       return article.id != dataId || article.color != colorId;
     });
     cart = filtre;
     // je supprime le code HTML
     document.querySelector(
-        `[data-id='${dataId}']` && `[data-color='${colorId}']`
-        )
-      .remove();
+      `[data-id='${dataId}']` && `[data-color='${colorId}']`
+      )
+    .remove();
     // je mes à jour le localstorage
     localStorage.setItem("cart", JSON.stringify(cart));
     calcultateTotal();
@@ -82,11 +86,17 @@ function calcultateTotal() {
 // le formulaire
 // je créer la constante pour indiqué le lieu du formulaire
 const form = document.querySelector(".cart__order__form");
+//je crée les contantes pour chaque élément du formulaire
+const firstName = document.querySelector("firstName");
+const lastName = document.querySelector("lastName");
+const address = document.querySelector("address");
+const city = document.querySelector("city");
+const email = document.querySelector("email");
 // je créer les constantes des regex
 const nameRegex = new RegExp ("[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]+$");
 const addressRegex = new RegExp ("[a-zA-Z0-9àáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]+$");
 const cityRegex = new RegExp ("[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]+$");
-const emailRegex = new RegExp("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$");
+const emailRegex = new RegExp("^([A-Za-z0-9.-_]{1,100})+@([A-Za-z0-9.-_]{1,100})+.+[a-z]{2,10}$");
 // Ecoute les modification
 form.firstName.addEventListener('change', function() {
   validFirstName(this);
@@ -114,7 +124,6 @@ const validFirstName = function(inputFirstName) {
 };
 const validLastName = function(inputLastName) {
   let lastNameErrorMsg = inputLastName.nextElementSibling;
-
   if (nameRegex.test(inputLastName.value)) {
       lastNameErrorMsg.innerHTML = '';
   } else {
@@ -123,7 +132,6 @@ const validLastName = function(inputLastName) {
 };
 const validAddress = function(inputAddress) {
   let addressErrorMsg = inputAddress.nextElementSibling;
-
   if (addressRegex.test(inputAddress.value)) {
       addressErrorMsg.innerHTML = '';
   } else {
@@ -132,7 +140,6 @@ const validAddress = function(inputAddress) {
 };
 const validCity = function(inputCity) {
   let cityErrorMsg = inputCity.nextElementSibling;
-
   if (cityRegex.test(inputCity.value)) {
       cityErrorMsg.innerHTML = '';
   } else {
@@ -141,10 +148,29 @@ const validCity = function(inputCity) {
 };
 const validEmail = function(inputEmail) {
   let emailErrorMsg = inputEmail.nextElementSibling;
-
   if (emailRegex.test(inputEmail.value)) {
       emailErrorMsg.innerHTML = '';
   } else {
       emailErrorMsg.innerHTML = 'Veuillez renseigner votre email.';
   }
 };
+// je crée la function pour la confirmation (ennvoye au local storage)
+// je créer la constante du bouton commander
+const btn_commander = document.getElementById('order');
+  btn_commander.addEventListener('click', (event) => {
+  event.preventDefault();
+const order = {
+  contact : {
+    firstName: firstName,
+    lastName: lastName,
+    address: address,
+    city: city,
+    email: email,
+  },
+    products: cart.map(function (product) {
+      return product._id
+  })
+};
+console.log(order);
+  
+}); 
