@@ -87,15 +87,14 @@ function calcultateTotal() {
 // je créer la constante pour indiqué le lieu du formulaire
 const form = document.querySelector(".cart__order__form");
 //je crée les contantes pour chaque élément du formulaire
-const firstName = document.querySelector("firstName");
-const lastName = document.querySelector("lastName");
-const address = document.querySelector("address");
-const city = document.querySelector("city");
-const email = document.querySelector("email");
+const firstName = document.querySelector("#firstName");
+const lastName = document.querySelector("#lastName");
+const address = document.querySelector("#address");
+const city = document.querySelector("#city");
+const email = document.querySelector("#email");
 // je créer les constantes des regex
-const nameRegex = new RegExp ("[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]+$");
+const nameCityRegex = new RegExp ("[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]+$");
 const addressRegex = new RegExp ("[a-zA-Z0-9àáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]+$");
-const cityRegex = new RegExp ("[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]+$");
 const emailRegex = new RegExp("^([A-Za-z0-9.-_]{1,100})+@([A-Za-z0-9.-_]{1,100})+.+[a-z]{2,10}$");
 // Ecoute les modification
 form.firstName.addEventListener('change', function() {
@@ -114,63 +113,89 @@ form.email.addEventListener('change', function() {
   validEmail(this);
 });
 // partie validation
-const validFirstName = function(inputFirstName) {
+const validFirstName = function (inputFirstName) {
   let firstNameErrorMsg = inputFirstName.nextElementSibling;
-  if (nameRegex.test(inputFirstName.value)) {
+  if (nameCityRegex.test(inputFirstName.value)) {
       firstNameErrorMsg.innerHTML = '';
+      return true;
   } else {
       firstNameErrorMsg.innerHTML = 'Veuillez renseigner votre prénom.';
+      return false;
   }
 };
-const validLastName = function(inputLastName) {
+const validLastName = function (inputLastName) {
   let lastNameErrorMsg = inputLastName.nextElementSibling;
-  if (nameRegex.test(inputLastName.value)) {
+  if (nameCityRegex.test(inputLastName.value)) {
       lastNameErrorMsg.innerHTML = '';
+      return true;
   } else {
       lastNameErrorMsg.innerHTML = 'Veuillez renseigner votre nom.';
+      return false;
   }
 };
-const validAddress = function(inputAddress) {
+const validAddress = function (inputAddress) {
   let addressErrorMsg = inputAddress.nextElementSibling;
   if (addressRegex.test(inputAddress.value)) {
       addressErrorMsg.innerHTML = '';
+      return true;
   } else {
       addressErrorMsg.innerHTML = 'Veuillez renseigner votre adresse.';
+      return false;
   }
 };
-const validCity = function(inputCity) {
+const validCity = function (inputCity) {
   let cityErrorMsg = inputCity.nextElementSibling;
-  if (cityRegex.test(inputCity.value)) {
+  if (nameCityRegex.test(inputCity.value)) {
       cityErrorMsg.innerHTML = '';
+      return true;
   } else {
       cityErrorMsg.innerHTML = 'Veuillez renseigner votre ville.';
+      return false;
   }
 };
-const validEmail = function(inputEmail) {
+const validEmail = function (inputEmail) {
   let emailErrorMsg = inputEmail.nextElementSibling;
   if (emailRegex.test(inputEmail.value)) {
       emailErrorMsg.innerHTML = '';
+      return true;
   } else {
       emailErrorMsg.innerHTML = 'Veuillez renseigner votre email.';
+      return false;
   }
 };
-// je crée la function pour la confirmation (ennvoye au local storage)
-// je créer la constante du bouton commander
-const btn_commander = document.getElementById('order');
+  // je créer la constante du bouton commander
+  const btn_commander = document.getElementById('order');
   btn_commander.addEventListener('click', (event) => {
   event.preventDefault();
-const order = {
-  contact : {
-    firstName: firstName,
-    lastName: lastName,
-    address: address,
-    city: city,
-    email: email,
-  },
-    products: cart.map(function (product) {
-      return product._id
+  // je verififie que tous les champs sont remplie
+  if (validFirstName(firstName) && validLastName(lastName) && validAddress(address) && validCity(city) && validEmail(email)) {
+    const order = {
+    contact : {
+      firstName: firstName,
+      lastName: lastName,
+      address: address,
+      city: city,
+      email: email,
+    },
+      products: cart.map(function (product) {
+        return product.id 
+    })
+    };
+    // pour la methode d'envoye
+    const options = {
+    method: 'POST',
+    body: JSON.stringify(order),
+    headers: {  
+      "Accept": "application/json",
+      'Content-Type': 'application/json' 
+    }
+    };
+    // l'envoie
+    fetch("http://localhost:3000/api/products/order",options)
+      .then(response => response.json())
+      .then(data => {
+      localStorage.setItem('orderId', data.orderId);
+      document.location.href = 'confirmation.html?id='+ data.orderId;
+      });
+    }
   })
-};
-console.log(order);
-  
-}); 
