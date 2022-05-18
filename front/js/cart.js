@@ -181,6 +181,7 @@ const validEmail = function (inputEmail) {
         return product.id 
     })
     };
+    console.log(order)
     // pour la methode d'envoye
     const options = {
     method: 'POST',
