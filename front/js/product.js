@@ -1,14 +1,17 @@
+//------ placer les donnés sur la page ------//
 // je récupère l'id du produit a partir de l'URL
 const productUrl = new URLSearchParams(document.location.search);
 const productId = productUrl.get("_id");
 const pageTitle = document.querySelector("title");
+
 //je crée les contantes pour chaque élément du produit
 const productImg = document.querySelector(".item__img");
 const productTitle = document.querySelector("#title");
 const productPrice = document.querySelector("#price");
 const productDescription = document.querySelector("#description");
 const colorSelect = document.querySelector("#colors");
-// Je récupére le produit depuis mon API^
+
+// Je récupére le produit depuis mon API
 let kanap
 fetch(`http://localhost:3000/api/products/${productId}`)
   .then((res) => res.json())
@@ -27,6 +30,8 @@ fetch(`http://localhost:3000/api/products/${productId}`)
       `<option value="${colors}">${colors}</option>` ;
     }
 })
+
+//--------- donnée + alerte --------//
 // je récupère les donnés pour le panier
 const btnPanier = document.querySelector("#addToCart")
 btnPanier.addEventListener("click",addLocalStorage);
@@ -47,6 +52,8 @@ function addLocalStorage (){
     alert ("Veuillez choisir une quantité entre 1 et 100");
     return
   };
+
+  //------------localStorage-----------------//
   //je crée la constate tableau pour le localstorage
   const cart = {
     id : productId,
@@ -77,7 +84,7 @@ function addLocalStorage (){
     storage.push(cart);
   }
   //Convertir l'objet JS en chaine de caractere Json afin de le stocker ds le localstorage    
-  localStorage.setItem("cart", JSON.stringify(storage)); 
+  localStorage.setItem("cart", JSON.stringify(storage));
   // Créer un message d'alerte pr confimer que le produit a été ajouté au panier
   alert("Votre produit a bien été ajouté au panier");   
 };

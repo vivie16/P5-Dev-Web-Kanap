@@ -1,4 +1,5 @@
-// je récupère les donné du localstorage
+//------ placer les donnés sur la page ------//
+// je récupère les données du localstorage
 let cart = JSON.parse(localStorage.getItem("cart"));
 // je créer la constante pour indiqué le lieu d'insertion des produits
 const items = document.getElementById("cart__items");
@@ -29,25 +30,30 @@ for ( kanap of cart) {
 </article>`
 calcultateTotal()
 }
+
+//--------- modifié les données --------//
+//constante pour récupéré les données
 const products = document.querySelectorAll(".cart__item");
 const deleteItem = document.querySelectorAll(".deleteItem");
 const quantity = document.querySelectorAll(".itemQuantity");
+
 // je créer la boucle pour modifier la quantiter
 for (let i = 0; i < products.length; i++) {
-  const qty = quantity[i];
+  const qty = quantity[i]
   const cartProducts = cart[i];
-  if (qty) {
     qty.addEventListener("change", (event) => {
+      if (qty.value <1 ||qty.value>100){
+        alert ("Veuillez choisir une quantité entre 1 et 100");
+        return
+    } else {
       //j'enregistre la nouvelle quantiter
       cartProducts.quantity = parseInt(event.target.value);
       // je mes à jour le localstorage
       localStorage.setItem("cart", JSON.stringify(cart));
-    })}
-    if (qty.value > 100) {
-      qty.value = 100;
     }
-      calcultateTotal();
-}
+    calcultateTotal();
+  })}
+
 // suprimer du panier un produit
 for (let i = 0; i < products.length; i++) {
   const del = deleteItem[i];
@@ -69,29 +75,25 @@ for (let i = 0; i < products.length; i++) {
     calcultateTotal();
   });
 }
+
+//-------- prix de la commade ---------//
 // le nombre d'article et le prix total
 function calcultateTotal() {
-  let panier = JSON.parse(localStorage.getItem("cart"));
+  let basket = JSON.parse(localStorage.getItem("cart"));
   // je déclare les variables en tant que nombre
-  let totalArticle = 0;
-  let totalPrix = 0;
+  let totalItem = 0;
+  let totalPrice = 0;
   // je créer la boucle pour récupéré les quantités et calculer le prix total
-  for (let article of panier) {
-    totalArticle += parseInt(article.quantity);
-    totalPrix += parseInt(article.quantity) * parseInt(article.price);
+  for (let item of basket) {
+    totalItem += parseInt(item.quantity);
+    totalPrice += parseInt(item.quantity) * parseInt(item.price);
   }
-  document.getElementById("totalQuantity").textContent = totalArticle;
-  document.getElementById("totalPrice").textContent = totalPrix;
+  document.getElementById("totalQuantity").textContent = totalItem;
+  document.getElementById("totalPrice").textContent = totalPrice;
 }
-// le formulaire
+//---------- le formulaire ---------//
 // je créer la constante pour indiqué le lieu du formulaire
 const form = document.querySelector(".cart__order__form");
-//je crée les contantes pour chaque élément du formulaire
-const firstName = document.querySelector("#firstName");
-const lastName = document.querySelector("#lastName");
-const address = document.querySelector("#address");
-const city = document.querySelector("#city");
-const email = document.querySelector("#email");
 // je créer les constantes des regex
 const nameCityRegex = new RegExp ("[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]+$");
 const addressRegex = new RegExp ("[a-zA-Z0-9àáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]+$");
@@ -163,40 +165,41 @@ const validEmail = function (inputEmail) {
       return false;
   }
 };
-  // je créer la constante du bouton commander
-  const btn_commander = document.getElementById('order');
-  btn_commander.addEventListener('click', (event) => {
-  event.preventDefault();
-  // je verififie que tous les champs sont remplie
-  if (validFirstName(firstName) && validLastName(lastName) && validAddress(address) && validCity(city) && validEmail(email)) {
-    const order = {
-    contact : {
-      firstName: firstName,
-      lastName: lastName,
-      address: address,
-      city: city,
-      email: email,
-    },
-      products: cart.map(function (product) {
-        return product.id 
-    })
-    };
-    console.log(order)
-    // pour la methode d'envoye
-    const options = {
-    method: 'POST',
-    body: JSON.stringify(order),
-    headers: {  
-      "Accept": "application/json",
-      'Content-Type': 'application/json' 
-    }
-    };
-    // l'envoie
-    fetch("http://localhost:3000/api/products/order",options)
-      .then(response => response.json())
-      .then(data => {
-      localStorage.setItem('orderId', data.orderId);
-      document.location.href = 'confirmation.html?id='+ data.orderId;
-      });
-    }
+// je créer la constante du bouton commander
+const btn_commander = document.getElementById('order');
+btn_commander.addEventListener('click', (event) => {
+event.preventDefault();
+// je verififie que tous les champs sont remplie
+if (validFirstName(firstName) && validLastName(lastName) && validAddress(address) && validCity(city) && validEmail(email)) {
+  const order = {
+  contact : {
+    firstName: document.querySelector("#firstName").value,
+    lastName: document.querySelector("#lastName").value,
+    address: document.querySelector("#address").value,
+    city: document.querySelector("#city").value,
+    email: document.querySelector("#email").value,
+  },
+    products: cart.map(function (product) {
+      return product.id 
   })
+  };
+
+  //--------- Envoye des données ---------//
+  // pour la methode d'envoye
+  const options = {
+  method: 'POST',
+  body: JSON.stringify(order),
+  headers: {  
+    "Accept": "application/json",
+    'Content-Type': 'application/json' 
+  }
+  };
+  //l'envoie
+  fetch("http://localhost:3000/api/products/order",options)
+    .then(response => response.json())
+    .then(data => {
+    localStorage.setItem('orderId', data.orderId);
+    document.location.href = 'confirmation.html?id='+ data.orderId;
+    });
+  }
+})
