@@ -60,7 +60,6 @@ function addLocalStorage (){
     img : productImageURL,
     alt : productImageAlt,
     name : productTitle.textContent,
-    price : productPrice.textContent,
     color : colorChoice,
     quantity : quantitySelect,
   };

@@ -4,42 +4,47 @@ let cart = JSON.parse(localStorage.getItem("cart"));
 // je créer la constante pour indiqué le lieu d'insertion des produits
 const items = document.getElementById("cart__items");
 let kanap
+fetch("http://localhost:3000/api/products/")
+  .then((res) => res.json())
+  .then((res) => cart.forEach((product) => {
+    const { id, color, alt, name, quantity, img } = product;
+    const data = res;
+    const search = data.find(el => el._id === id);
+    const price = search.price;
 // création de la boucle
-for ( kanap of cart) {
-    items.innerHTML += 
-    `<article class="cart__item" data-id="${kanap.id}" data-color="${kanap.color}">
-    <div class="cart__item__img">
-    <img src="${kanap.img}" alt="${kanap.alt}">
-    </div>
-    <div class="cart__item__content">
-        <div class="cart__item__content__description">
-        <h2>${kanap.name}</h2>
-        <p>${kanap.color}</p>
-        <p>${kanap.price}€</p>
-        </div>
-        <div class="cart__item__content__settings">
-        <div class="cart__item__content__settings__quantity">
-            <p>Qté : </p>
-            <input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value="${kanap.quantity}">
-        </div>
-        <div class="cart__item__content__settings__delete">
-            <p class="deleteItem">Supprimer</p>
-        </div>
-        </div>
-    </div>
-</article>`
-calcultateTotal()
-}
+      items.innerHTML += 
+      `<article class="cart__item" data-id="${id}" data-color="${color}">
+      <div class="cart__item__img">
+      <img src="${img}" alt="${alt}">
+      </div>
+      <div class="cart__item__content">
+          <div class="cart__item__content__description">
+          <h2>${name}</h2>
+          <p>${color}</p>
+          <p>${price}€</p>
+          </div>
+          <div class="cart__item__content__settings">
+          <div class="cart__item__content__settings__quantity">
+              <p>Qté : </p>
+              <input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value="${quantity}">
+          </div>
+          <div class="cart__item__content__settings__delete">
+              <p class="deleteItem">Supprimer</p>
+          </div>
+          </div>
+      </div>
+  </article>`
+  calcultateTotal()
 
 //--------- modifié les données --------//
 //constante pour récupéré les données
 const products = document.querySelectorAll(".cart__item");
 const deleteItem = document.querySelectorAll(".deleteItem");
-const quantity = document.querySelectorAll(".itemQuantity");
+const itemQuantity = document.querySelectorAll(".itemQuantity");
 
 // je créer la boucle pour modifier la quantiter
 for (let i = 0; i < products.length; i++) {
-  const qty = quantity[i]
+  const qty = itemQuantity[i]
   const cartProducts = cart[i];
     qty.addEventListener("change", (event) => {
       if (qty.value <1 ||qty.value>100){
@@ -86,11 +91,11 @@ function calcultateTotal() {
   // je créer la boucle pour récupéré les quantités et calculer le prix total
   for (let item of basket) {
     totalItem += parseInt(item.quantity);
-    totalPrice += parseInt(item.quantity) * parseInt(item.price);
+    totalPrice += parseInt(item.quantity)* parseInt(price);
   }
   document.getElementById("totalQuantity").textContent = totalItem;
   document.getElementById("totalPrice").textContent = totalPrice;
-}
+}}));
 //---------- le formulaire ---------//
 // je créer la constante pour indiqué le lieu du formulaire
 const form = document.querySelector(".cart__order__form");
